@@ -1,10 +1,25 @@
+import { useHistory } from "react-router-dom";
+import { app } from "../../../../firebase/firebase.config";
 import Button from "../../../Button";
 import Divider from "../../../Divider";
 import ProfilePicture from "../../../ProfilePicture";
 import OptionsChip from "../SettingsDivision/OptionsChip";
+import { getAuth } from "@firebase/auth";
 
 const MyProfile = () => {
-	const options = ["Reset Password", "Delete Account", "Sign Out"];
+	const history = useHistory();
+	const auth = getAuth(app);
+	const options = [
+		{ text: "Reset Password", onClick: () => {} },
+		{ text: "Delete Account", onClick: () => {} },
+		{
+			text: "Sign Out",
+			onClick: () => {
+				auth.signOut();
+				history.push("/login");
+			},
+		},
+	];
 	return (
 		<div className="mt-16">
 			<div className="grid items-center text-center">
@@ -19,8 +34,15 @@ const MyProfile = () => {
 				<div className="mt-5">
 					{options.map((item, idx) => {
 						return (
-							<div key={idx} className="mt-1">
-								<OptionsChip text={item} />
+							<div
+								key={idx}
+								className="mt-1"
+								onClick={(event) => {
+									event.preventDefault();
+									item.onClick();
+								}}
+							>
+								<OptionsChip text={item.text} />
 								{idx + 1 !== options.length ? (
 									<div className="mt-2">
 										<Divider />

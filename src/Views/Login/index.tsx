@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-apollo";
 import { app } from "../../firebase/firebase.config";
 import { createUser } from "../../queries/UserQuery";
+import { useHistory } from "react-router-dom";
 
 type User = {
 	name: string;
@@ -16,6 +17,7 @@ type User = {
 };
 
 const Login = () => {
+	const history = useHistory();
 	const [token, setToken] = useState<String | null>(null);
 	const [user, setUser] = useState<User | null>(null);
 	const [addUser, { loading }] = useMutation(createUser, {
@@ -45,6 +47,7 @@ const Login = () => {
 						premium: false,
 					});
 				}
+				history.push("/agenda");
 			})
 			.catch((error) => {
 				console.log(error.message);
