@@ -18,7 +18,7 @@ type User = {
 const Login = () => {
 	const [token, setToken] = useState<String | null>(null);
 	const [user, setUser] = useState<User | null>(null);
-	const [addUser] = useMutation(createUser, {
+	const [addUser, { loading }] = useMutation(createUser, {
 		context: {
 			headers: {
 				token: token,
@@ -51,10 +51,15 @@ const Login = () => {
 			});
 	};
 	useEffect(() => {
-		if (token && user) {
-			console.log(user);
-			addUser();
-		}
+		const getUser = async () => {
+			if (token && user) {
+				const response = await addUser();
+				console.log(response.data.createUser);
+				console.log(loading);
+			}
+		};
+		getUser();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [user, token]);
 	return (
 		<div>
