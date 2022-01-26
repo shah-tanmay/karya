@@ -51,7 +51,7 @@ const Settings = () => {
 				<div className="flex gap-8 p-2">
 					{settingsArray.map((item, idx) => {
 						return (
-							<div className="flex flex-col">
+							<div className="flex flex-col" key={idx}>
 								<div
 									className={`cursor-pointer ${
 										item.text === selected && showDiv
