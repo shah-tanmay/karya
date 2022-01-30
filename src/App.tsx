@@ -1,14 +1,46 @@
-import ApolloClient from "apollo-boost";
+import {
+	ApolloClient,
+	InMemoryCache,
+	createHttpLink,
+	DefaultOptions,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import React from "react";
-import { ApolloProvider } from "react-apollo";
+import { ApolloProvider } from "@apollo/react-hooks";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { UserContext } from "./context/usercontext";
 import useAuthListner from "./hooks/user";
 import View from "./Views";
 import Login from "./Views/Login";
 
-export const client = new ApolloClient({
+const httpLink = createHttpLink({
 	uri: "http://localhost:5000/graphql",
+});
+
+const authLink = setContext(async (_, { headers }) => {
+	return {
+		headers: {
+			...headers,
+			authorization: "",
+		},
+	};
+});
+
+const defaultOptions: DefaultOptions = {
+	watchQuery: {
+		fetchPolicy: "no-cache",
+		errorPolicy: "ignore",
+	},
+	query: {
+		fetchPolicy: "no-cache",
+		errorPolicy: "all",
+	},
+};
+
+const client = new ApolloClient({
+	link: authLink.concat(httpLink),
+	cache: new InMemoryCache(),
+	defaultOptions: defaultOptions,
 });
 
 function App() {
